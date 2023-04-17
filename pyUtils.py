@@ -44,4 +44,37 @@ def get_latest_file(dir: str, regex='*') -> str:
     return latest_file
 
 
+def animate_3d_camera_rotation(X, Y, Z):
+    import matplotlib.pyplot as plt
+    from matplotlib import animation
+    from mpl_toolkits.mplot3d import Axes3D
+
+
+    fig = plt.figure(figsize=(6, 5))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
+    ax.grid(False)
+
+    scat = ax.scatter(X, Y, Z,  s=2, marker='.', alpha=0.65, edgecolors='k', linewidths=0.1)
+    fig.tight_layout()
+
+    def init():
+        ax.view_init(elev=10., azim=0)
+        return [scat]
+
+    def animate(i):
+        print(f"\rFrame {i} / {360}", end='', flush=True)
+        angle = i 
+        ax.view_init(elev=10., azim=i)
+        return [scat]
+
+    # Animate
+    anim = animation.FuncAnimation(fig, animate, init_func=init,
+                                frames=int(360), interval=20, blit=True)
+
+    # Save
+    anim.save('rotation_basic_animation.mp4', fps=30, extra_args=['-vcodec', 'libx264'], dpi=300)
+
 
